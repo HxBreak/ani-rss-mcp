@@ -8,8 +8,11 @@ import {
   type CallToolRequest,
 } from '@modelcontextprotocol/sdk/types.js';
 
+import { config, logStartupInfo } from './config/index.js';
 import {
   allTools,
+  getAvailableTools,
+  hasBackendTools,
   handleListSubscriptions,
   handleAddSubscription,
   handleUpdateSubscription,
@@ -26,6 +29,21 @@ import {
   handleGetMikanBangumiDetail,
 } from './tools/index.js';
 
+// Backend tool names for protection check
+const backendToolNames = new Set([
+  'ani-rss_list-subscriptions',
+  'ani-rss_add-subscription',
+  'ani-rss_update-subscription',
+  'ani-rss_delete-subscriptions',
+  'ani-rss_refresh-subscription',
+  'ani-rss_batch-enable',
+  'ani-rss_update-episode-count',
+  'ani-rss_import-subscriptions',
+  'ani-rss_scrape-media-info',
+  'ani-rss_get-playlist',
+  'ani-rss_get-subtitles',
+]);
+
 // Create server instance
 const server = new Server(
   {
@@ -41,7 +59,7 @@ const server = new Server(
 
 // Handle list tools request
 server.setRequestHandler(ListToolsRequestSchema, async () => {
-  return { tools: allTools };
+  return { tools: getAvailableTools() };
 });
 
 // Handle call tool request
@@ -51,7 +69,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest)
   let result: string;
 
   try {
-    switch (name) {
+    // Protect backend tools in Mikan-only mode
+    if (backendToolNames.has(name) && !hasBackendTools()) {
+      result = JSON.stringify({
+        error: true,
+        message: `Tool "${name}" requires ANI_RSS_API_KEY to be configured. Current mode: Mikan-only.`,
+      });
+    } else {
+      switch (name) {
       // Subscription tools (/ani - supports API_KEY)
       case 'ani-rss_list-subscriptions':
         result = await handleListSubscriptions();
@@ -103,6 +128,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest)
       default:
         result = JSON.stringify({ error: true, message: `Unknown tool: ${name}` });
     }
+    }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     result = JSON.stringify({ error: true, message: errorMessage });
@@ -122,7 +148,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest)
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('ani-rss MCP server started (API_KEY mode)');
+  logStartupInfo();
 }
 
 main().catch((error) => {

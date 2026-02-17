@@ -26,16 +26,17 @@
     "mikan",
     "model-context-protocol"
   ],
-  "author": "HxBreak",
+  "author": "wushuo894",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HxBreak/ani-rss-mcp.git"
+    "url": "git+https://github.com/wushuo894/ani-rss.git",
+    "directory": "mcp"
   },
   "bugs": {
-    "url": "https://github.com/HxBreak/ani-rss-mcp/issues"
+    "url": "https://github.com/wushuo894/ani-rss/issues"
   },
-  "homepage": "https://github.com/HxBreak/ani-rss-mcp#readme",
+  "homepage": "https://github.com/wushuo894/ani-rss/tree/main/mcp#readme",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
     "cheerio": "^1.0.0",

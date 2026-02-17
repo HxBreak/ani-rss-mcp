@@ -1,27 +1,46 @@
 /**
- * MCP Tools - API_KEY mode only
+ * MCP Tools - Dynamic tool exposure based on configuration
  *
- * Only includes tools that support API_KEY authentication:
- * - /ani (subscription) - API_KEY supported
- * - /playlist - API_KEY supported
- * - /playitem - API_KEY supported
- * - mikan direct - independent, no backend needed
+ * Full mode (ANI_RSS_API_KEY configured):
+ * - /ani (subscription) - 9 tools
+ * - /playlist - 2 tools
+ * - mikan direct - 3 tools
  *
- * Removed tools (no API_KEY support):
- * - auth, config, download, bangumi, tmdb, notification, collection, rss, system
+ * Mikan-only mode (ANI_RSS_API_KEY not configured):
+ * - mikan direct - 3 tools only
  */
 
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { config } from '../config/index.js';
 import { subscriptionTools } from './subscription.js';
 import { playlistTools } from './playlist.js';
 import { mikanTools } from './mikan.js';
 
-// Export all tools
+// All tools for backward compatibility
 export const allTools: Tool[] = [
   ...subscriptionTools,
   ...playlistTools,
   ...mikanTools,
 ];
+
+/**
+ * Get available tools based on configuration
+ * - Full mode: all 14 tools
+ * - Mikan-only mode: 3 mikan tools only
+ */
+export function getAvailableTools(): Tool[] {
+  if (config.hasBackend) {
+    return [...subscriptionTools, ...playlistTools, ...mikanTools];
+  }
+  return [...mikanTools];
+}
+
+/**
+ * Check if backend tools are available
+ */
+export function hasBackendTools(): boolean {
+  return config.hasBackend;
+}
 
 // Export handlers
 export {

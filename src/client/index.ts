@@ -1,4 +1,5 @@
 import type { ApiResponse } from './types.js';
+import { config } from '../config/index.js';
 
 /**
  * Ani-Rss API Client - API_KEY mode only
@@ -12,8 +13,8 @@ export class AniRssClient {
   private apiKey?: string;
 
   constructor() {
-    this.baseUrl = process.env.ANI_RSS_URL || 'http://localhost:7789';
-    this.apiKey = process.env.ANI_RSS_API_KEY;
+    this.baseUrl = config.baseUrl;
+    this.apiKey = config.apiKey;
   }
 
   private getHeaders(): Record<string, string> {

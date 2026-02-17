@@ -1,6 +1,6 @@
 # ani-rss MCP Server
 
-[MCP](https://modelcontextprotocol.io/) server for [ani-rss](https://github.com/HxBreak/ani-rss) - 番剧自动订阅下载工具。
+[MCP](https://modelcontextprotocol.io/) server for [ani-rss](https://github.com/wushuo894/ani-rss) - 番剧自动订阅下载工具。
 
 ## 安装
 
@@ -21,11 +21,18 @@ npx ani-rss-mcp
 ### 环境变量
 
 ```bash
-ANI_RSS_URL=http://localhost:7789          # ani-rss 服务地址
-ANI_RSS_AUTH_TYPE=none|bearer|apiKey       # 认证方式
-ANI_RSS_TOKEN=<token>                      # Bearer token (bearer 认证时)
-ANI_RSS_API_KEY=<api-key>                  # API Key (apiKey 认证时)
+ANI_RSS_URL=http://localhost:7789          # ani-rss 服务地址（默认: http://localhost:7789）
+ANI_RSS_API_KEY=<api-key>                  # API Key（可选，不配置则仅启用 Mikan 工具）
 ```
+
+### 运行模式
+
+根据 `ANI_RSS_API_KEY` 是否配置，MCP 服务器有两种运行模式：
+
+| 模式 | 条件 | 可用工具 |
+|------|------|----------|
+| **完整模式** | `ANI_RSS_API_KEY` 已配置 | 14 个工具全部可用 |
+| **Mikan 模式** | `ANI_RSS_API_KEY` 未配置 | 仅 3 个 Mikan 工具可用 |
 
 ### Claude Desktop 配置
 
@@ -33,6 +40,8 @@ ANI_RSS_API_KEY=<api-key>                  # API Key (apiKey 认证时)
 
 **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+#### 完整模式（推荐）
 
 ```json
 {
@@ -43,6 +52,18 @@ ANI_RSS_API_KEY=<api-key>                  # API Key (apiKey 认证时)
         "ANI_RSS_URL": "http://localhost:7789",
         "ANI_RSS_API_KEY": "your-api-key"
       }
+    }
+  }
+}
+```
+
+#### Mikan 模式（无需后端）
+
+```json
+{
+  "mcpServers": {
+    "ani-rss": {
+      "command": "ani-rss-mcp"
     }
   }
 }
@@ -67,7 +88,7 @@ ANI_RSS_API_KEY=<api-key>                  # API Key (apiKey 认证时)
 
 ## 可用工具
 
-### 订阅管理
+### 订阅管理（需要后端）
 
 | 工具 | 说明 |
 |------|------|
@@ -81,13 +102,20 @@ ANI_RSS_API_KEY=<api-key>                  # API Key (apiKey 认证时)
 | `ani-rss_import-subscriptions` | 导入订阅 |
 | `ani-rss_scrape-media-info` | 刮削媒体信息 |
 
-### Mikan 搜索
+### 播放列表（需要后端）
 
 | 工具 | 说明 |
 |------|------|
-| `ani-rss_search-mikan` | 搜索 Mikan 番剧 |
-| `ani-rss_get-mikan-groups` | 获取字幕组列表 |
-| `ani-rss_get-mikan-bangumi` | 获取番剧详情（含 RSS 地址） |
+| `ani-rss_get-playlist` | 获取播放列表 |
+| `ani-rss_get-subtitles` | 获取字幕列表 |
+
+### Mikan 搜索（无需后端）
+
+| 工具 | 说明 |
+|------|------|
+| `ani-rss_search-mikan-direct` | 直接搜索 Mikan 番剧 |
+| `ani-rss_browse-mikan-season` | 浏览 Mikan 季度番剧列表 |
+| `ani-rss_get-mikan-bangumi-detail` | 获取番剧详情（含 RSS 地址） |
 
 ## 开发
 
