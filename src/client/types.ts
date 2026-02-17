@@ -36,7 +36,7 @@ export interface Ani {
   customDownloadPath?: boolean;
   bgmUrl?: string;
   tmdb?: Tmdb;
-  customEpisode?: number;
+  customEpisode?: boolean;
   customEpisodeStr?: string;
   customEpisodeGroupIndex?: number;
   omit?: boolean;
@@ -47,9 +47,27 @@ export interface Ani {
   message?: boolean;
   completed?: boolean;
   customTags?: string[];
+  customTagsEnable?: boolean;
   image?: string;
   themoviedbName?: string;
-  type?: string; // Used in RSS parsing
+  type?: string;
+  // Additional fields for backend compatibility
+  customRenameTemplate?: string;
+  customRenameTemplateEnable?: boolean;
+  customPriorityKeywords?: string[];
+  customPriorityKeywordsEnable?: boolean;
+  customUploadPathTarget?: string;
+  customUploadEnable?: boolean;
+  customCompleted?: boolean;
+  customCompletedPathTemplate?: string;
+  standbyRssList?: StandbyRss[];
+}
+
+// Standby RSS (备用 RSS)
+export interface StandbyRss {
+  label?: string;   // 字幕组名称
+  url?: string;     // RSS URL
+  offset?: number;  // 剧集偏移
 }
 
 // TMDB info

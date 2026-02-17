@@ -10,10 +10,6 @@ import {
 
 import {
   allTools,
-  handleLogin,
-  handleTestWhitelist,
-  handleGetConfig,
-  handleUpdateConfig,
   handleListSubscriptions,
   handleAddSubscription,
   handleUpdateSubscription,
@@ -23,41 +19,11 @@ import {
   handleUpdateEpisodeCount,
   handleImportSubscriptions,
   handleScrapeMediaInfo,
-  handleParseRss,
-  handlePreviewItems,
-  handleGetDownloadPath,
-  handleTestDownloadLogin,
-  handleListTorrents,
-  handleDeleteTorrentCache,
-  handleUpdateTrackers,
-  handleGetDownloadLogs,
-  handleSearchBangumi,
-  handleGetBangumiInfo,
-  handleGetBangumiTitle,
-  handleSaveBangumiRating,
-  handleGetBgmUserInfo,
-  handleGetTmdbName,
-  handleGetTmdbEpisodeGroup,
-  handleSearchMikan,
-  handleGetMikanGroups,
-  handleTestNotification,
-  handleCreateNotificationConfig,
-  handleGetTelegramChatId,
-  handlePreviewCollection,
-  handleExtractCollectionSubgroup,
-  handleStartCollectionDownload,
   handleGetPlaylist,
   handleGetSubtitles,
-  handleGetCustomCss,
-  handleGetCustomJs,
-  handleGetSystemInfo,
-  handleUpdateSystem,
-  handleRestartSystem,
-  handleClearCache,
-  handleListLogs,
-  handleClearLogs,
-  handleTestProxy,
-  handleRefreshCover,
+  handleSearchMikanDirect,
+  handleBrowseMikanSeason,
+  handleGetMikanBangumiDetail,
 } from './tools/index.js';
 
 // Create server instance
@@ -86,23 +52,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest)
 
   try {
     switch (name) {
-      // Auth tools
-      case 'ani-rss_login':
-        result = await handleLogin(args);
-        break;
-      case 'ani-rss_test-whitelist':
-        result = await handleTestWhitelist();
-        break;
-
-      // Config tools
-      case 'ani-rss_get-config':
-        result = await handleGetConfig();
-        break;
-      case 'ani-rss_update-config':
-        result = await handleUpdateConfig(args);
-        break;
-
-      // Subscription tools
+      // Subscription tools (/ani - supports API_KEY)
       case 'ani-rss_list-subscriptions':
         result = await handleListSubscriptions();
         break;
@@ -131,90 +81,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest)
         result = await handleScrapeMediaInfo(args);
         break;
 
-      // RSS tools
-      case 'ani-rss_parse-rss':
-        result = await handleParseRss(args);
-        break;
-      case 'ani-rss_preview-items':
-        result = await handlePreviewItems(args);
-        break;
-
-      // Download tools
-      case 'ani-rss_get-download-path':
-        result = await handleGetDownloadPath(args);
-        break;
-      case 'ani-rss_test-download-login':
-        result = await handleTestDownloadLogin(args);
-        break;
-      case 'ani-rss_list-torrents':
-        result = await handleListTorrents();
-        break;
-      case 'ani-rss_delete-torrent-cache':
-        result = await handleDeleteTorrentCache(args);
-        break;
-      case 'ani-rss_update-trackers':
-        result = await handleUpdateTrackers(args);
-        break;
-      case 'ani-rss_get-download-logs':
-        result = await handleGetDownloadLogs();
-        break;
-
-      // Bangumi tools
-      case 'ani-rss_search-bangumi':
-        result = await handleSearchBangumi(args);
-        break;
-      case 'ani-rss_get-bangumi-info':
-        result = await handleGetBangumiInfo(args);
-        break;
-      case 'ani-rss_get-bangumi-title':
-        result = await handleGetBangumiTitle(args);
-        break;
-      case 'ani-rss_save-bangumi-rating':
-        result = await handleSaveBangumiRating(args);
-        break;
-      case 'ani-rss_get-bgm-user-info':
-        result = await handleGetBgmUserInfo();
-        break;
-
-      // TMDB tools
-      case 'ani-rss_get-tmdb-name':
-        result = await handleGetTmdbName(args);
-        break;
-      case 'ani-rss_get-tmdb-episode-group':
-        result = await handleGetTmdbEpisodeGroup(args);
-        break;
-
-      // Mikan tools
-      case 'ani-rss_search-mikan':
-        result = await handleSearchMikan(args);
-        break;
-      case 'ani-rss_get-mikan-groups':
-        result = await handleGetMikanGroups(args);
-        break;
-
-      // Notification tools
-      case 'ani-rss_test-notification':
-        result = await handleTestNotification(args);
-        break;
-      case 'ani-rss_create-notification-config':
-        result = await handleCreateNotificationConfig();
-        break;
-      case 'ani-rss_get-telegram-chat-id':
-        result = await handleGetTelegramChatId(args);
-        break;
-
-      // Collection tools
-      case 'ani-rss_preview-collection':
-        result = await handlePreviewCollection(args);
-        break;
-      case 'ani-rss_extract-collection-subgroup':
-        result = await handleExtractCollectionSubgroup(args);
-        break;
-      case 'ani-rss_start-collection-download':
-        result = await handleStartCollectionDownload(args);
-        break;
-
-      // Playlist tools
+      // Playlist tools (/playlist, /playitem - supports API_KEY)
       case 'ani-rss_get-playlist':
         result = await handleGetPlaylist(args);
         break;
@@ -222,36 +89,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest)
         result = await handleGetSubtitles(args);
         break;
 
-      // System tools
-      case 'ani-rss_get-custom-css':
-        result = await handleGetCustomCss();
+      // Mikan tools (direct scraping - no backend needed)
+      case 'ani-rss_search-mikan-direct':
+        result = await handleSearchMikanDirect(args);
         break;
-      case 'ani-rss_get-custom-js':
-        result = await handleGetCustomJs();
+      case 'ani-rss_browse-mikan-season':
+        result = await handleBrowseMikanSeason(args);
         break;
-      case 'ani-rss_get-system-info':
-        result = await handleGetSystemInfo();
-        break;
-      case 'ani-rss_update-system':
-        result = await handleUpdateSystem();
-        break;
-      case 'ani-rss_restart-system':
-        result = await handleRestartSystem(args);
-        break;
-      case 'ani-rss_clear-cache':
-        result = await handleClearCache();
-        break;
-      case 'ani-rss_list-logs':
-        result = await handleListLogs();
-        break;
-      case 'ani-rss_clear-logs':
-        result = await handleClearLogs();
-        break;
-      case 'ani-rss_test-proxy':
-        result = await handleTestProxy(args);
-        break;
-      case 'ani-rss_refresh-cover':
-        result = await handleRefreshCover(args);
+      case 'ani-rss_get-mikan-bangumi-detail':
+        result = await handleGetMikanBangumiDetail(args);
         break;
 
       default:
@@ -276,7 +122,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest)
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('ani-rss MCP server started');
+  console.error('ani-rss MCP server started (API_KEY mode)');
 }
 
 main().catch((error) => {

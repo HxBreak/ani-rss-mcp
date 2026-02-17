@@ -1,15 +1,18 @@
 import type { ApiResponse } from './types.js';
 
+/**
+ * Ani-Rss API Client - API_KEY mode only
+ *
+ * Configuration via environment variables:
+ * - ANI_RSS_URL: Backend URL (default: http://localhost:7789)
+ * - ANI_RSS_API_KEY: API key for authentication
+ */
 export class AniRssClient {
   private baseUrl: string;
-  private authType: 'none' | 'bearer' | 'apiKey';
-  private token?: string;
   private apiKey?: string;
 
   constructor() {
     this.baseUrl = process.env.ANI_RSS_URL || 'http://localhost:7789';
-    this.authType = (process.env.ANI_RSS_AUTH_TYPE as 'none' | 'bearer' | 'apiKey') || 'bearer';
-    this.token = process.env.ANI_RSS_TOKEN;
     this.apiKey = process.env.ANI_RSS_API_KEY;
   }
 
@@ -18,10 +21,7 @@ export class AniRssClient {
       'Content-Type': 'application/json',
     };
 
-    if (this.authType === 'bearer' && this.token) {
-      headers['Authorization'] = this.token;
-    } else if (this.authType === 'apiKey' && this.apiKey) {
-      // API Key 使用 header 's' 而不是 Authorization
+    if (this.apiKey) {
       headers['s'] = this.apiKey;
     }
 
@@ -29,14 +29,9 @@ export class AniRssClient {
   }
 
   private addApiKeyParam(url: URL): void {
-    if (this.authType === 'apiKey' && this.apiKey) {
+    if (this.apiKey) {
       url.searchParams.append('s', this.apiKey);
     }
-  }
-
-  setToken(token: string): void {
-    this.token = token;
-    this.authType = 'bearer';
   }
 
   async get<T>(path: string, query?: Record<string, string>): Promise<ApiResponse<T>> {
