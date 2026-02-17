@@ -1,29 +1,35 @@
 # ani-rss MCP Server
 
-MCP (Model Context Protocol) server for ani-rss API.
+[MCP](https://modelcontextprotocol.io/) server for [ani-rss](https://github.com/HxBreak/ani-rss) - 番剧自动订阅下载工具。
 
-## Installation
+## 安装
 
-```bash
-cd mcp
-npm install
-npm run build
-```
-
-## Configuration
-
-### Environment Variables
+### npm 全局安装
 
 ```bash
-ANI_RSS_URL=http://localhost:7789          # ani-rss server URL
-ANI_RSS_AUTH_TYPE=none|bearer|apiKey       # Authentication type
-ANI_RSS_TOKEN=<token>                      # Bearer token (if auth type is bearer)
-ANI_RSS_API_KEY=<api-key>                  # API Key (if auth type is apiKey)
+npm install -g ani-rss-mcp
 ```
 
-### Claude Desktop Configuration
+### npx 使用（无需安装）
 
-Add to your Claude Desktop config file:
+```bash
+npx ani-rss-mcp
+```
+
+## 配置
+
+### 环境变量
+
+```bash
+ANI_RSS_URL=http://localhost:7789          # ani-rss 服务地址
+ANI_RSS_AUTH_TYPE=none|bearer|apiKey       # 认证方式
+ANI_RSS_TOKEN=<token>                      # Bearer token (bearer 认证时)
+ANI_RSS_API_KEY=<api-key>                  # API Key (apiKey 认证时)
+```
+
+### Claude Desktop 配置
+
+添加到 Claude Desktop 配置文件：
 
 **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
@@ -32,8 +38,7 @@ Add to your Claude Desktop config file:
 {
   "mcpServers": {
     "ani-rss": {
-      "command": "node",
-      "args": ["/path/to/ani-rss/mcp/dist/index.js"],
+      "command": "ani-rss-mcp",
       "env": {
         "ANI_RSS_URL": "http://localhost:7789",
         "ANI_RSS_API_KEY": "your-api-key"
@@ -43,91 +48,68 @@ Add to your Claude Desktop config file:
 }
 ```
 
-## Available Tools (48 tools)
+或使用 npx：
 
-### Authentication (2)
-- `ani-rss_login` - Login to get token
-- `ani-rss_test-whitelist` - Check if IP is whitelisted
+```json
+{
+  "mcpServers": {
+    "ani-rss": {
+      "command": "npx",
+      "args": ["ani-rss-mcp"],
+      "env": {
+        "ANI_RSS_URL": "http://localhost:7789",
+        "ANI_RSS_API_KEY": "your-api-key"
+      }
+    }
+  }
+}
+```
 
-### Configuration (2)
-- `ani-rss_get-config` - Get system configuration
-- `ani-rss_update-config` - Update system configuration
+## 可用工具
 
-### Subscription Management (9)
-- `ani-rss_list-subscriptions` - Get subscription list
-- `ani-rss_add-subscription` - Add subscription
-- `ani-rss_update-subscription` - Update subscription
-- `ani-rss_delete-subscriptions` - Delete subscriptions
-- `ani-rss_refresh-subscription` - Refresh/download subscription
-- `ani-rss_batch-enable` - Batch enable/disable
-- `ani-rss_update-episode-count` - Update total episode count
-- `ani-rss_import-subscriptions` - Import subscriptions
-- `ani-rss_scrape-media-info` - Scrape media info
+### 订阅管理
 
-### RSS Parsing (2)
-- `ani-rss_parse-rss` - Parse RSS URL
-- `ani-rss_preview-items` - Preview subscription items
+| 工具 | 说明 |
+|------|------|
+| `ani-rss_list-subscriptions` | 获取订阅列表 |
+| `ani-rss_add-subscription` | 添加订阅（支持匹配/排除规则、自定义路径等） |
+| `ani-rss_update-subscription` | 更新订阅 |
+| `ani-rss_delete-subscriptions` | 删除订阅（可选删除本地文件） |
+| `ani-rss_refresh-subscription` | 刷新订阅（检查新资源） |
+| `ani-rss_batch-enable` | 批量启用/禁用订阅 |
+| `ani-rss_update-episode-count` | 更新总集数 |
+| `ani-rss_import-subscriptions` | 导入订阅 |
+| `ani-rss_scrape-media-info` | 刮削媒体信息 |
 
-### Download Management (6)
-- `ani-rss_get-download-path` - Get download path
-- `ani-rss_test-download-login` - Test download tool connection
-- `ani-rss_list-torrents` - Get downloader task list
-- `ani-rss_delete-torrent-cache` - Delete cached torrents
-- `ani-rss_update-trackers` - Update Trackers
-- `ani-rss_get-download-logs` - Get download logs
+### Mikan 搜索
 
-### Bangumi (5)
-- `ani-rss_search-bangumi` - Search bangumi
-- `ani-rss_get-bangumi-info` - Get bangumi info by ID
-- `ani-rss_get-bangumi-title` - Get final title
-- `ani-rss_save-bangumi-rating` - Save rating
-- `ani-rss_get-bgm-user-info` - Get user info
+| 工具 | 说明 |
+|------|------|
+| `ani-rss_search-mikan` | 搜索 Mikan 番剧 |
+| `ani-rss_get-mikan-groups` | 获取字幕组列表 |
+| `ani-rss_get-mikan-bangumi` | 获取番剧详情（含 RSS 地址） |
 
-### TMDB (2)
-- `ani-rss_get-tmdb-name` - Get TMDB name
-- `ani-rss_get-tmdb-episode-group` - Get episode group info
-
-### Mikan (2)
-- `ani-rss_search-mikan` - Search Mikan bangumi
-- `ani-rss_get-mikan-groups` - Get subtitle groups
-
-### Notification (3)
-- `ani-rss_test-notification` - Test notification
-- `ani-rss_create-notification-config` - Create notification config
-- `ani-rss_get-telegram-chat-id` - Get Telegram Chat ID
-
-### Collection Download (3)
-- `ani-rss_preview-collection` - Preview collection
-- `ani-rss_extract-collection-subgroup` - Extract subgroup
-- `ani-rss_start-collection-download` - Start collection download
-
-### Playlist (2)
-- `ani-rss_get-playlist` - Get playlist
-- `ani-rss_get-subtitles` - Get subtitles
-
-### System (10)
-- `ani-rss_get-custom-css` - Get custom CSS
-- `ani-rss_get-custom-js` - Get custom JavaScript
-- `ani-rss_get-system-info` - Get system info
-- `ani-rss_update-system` - Update system
-- `ani-rss_restart-system` - Restart/shutdown system
-- `ani-rss_clear-cache` - Clear cache
-- `ani-rss_list-logs` - Get log list
-- `ani-rss_clear-logs` - Clear logs
-- `ani-rss_test-proxy` - Test proxy connection
-- `ani-rss_refresh-cover` - Refresh cover
-
-## Development
+## 开发
 
 ```bash
-# Install dependencies
+# 安装依赖
 npm install
 
-# Build
+# 构建
 npm run build
 
-# Watch mode
+# 监听模式
 npm run dev
+```
+
+## 发布
+
+```bash
+# 登录 npm
+npm login
+
+# 发布
+npm publish
 ```
 
 ## License
